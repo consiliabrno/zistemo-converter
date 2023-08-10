@@ -72,7 +72,10 @@ def convert(filename, output_filename):
                     if int(df.iloc[i][3][0:2].replace(":", "")) >= 14:
                         log_hours += f"{df.iloc[i][0][0:3]},"
 
-                    if str(df.iloc[i][6])[8:10] == "16":
+                    #if str(df.iloc[i][6])[8:10] == "16":
+                    #    log_attendance += f"{df.iloc[i][0][0:3]}, "
+
+                    if df.iloc[i][3] == "0:00" and df.iloc[i][4] == "8:00":
                         log_attendance += f"{df.iloc[i][0][0:3]}, "
 
             total_hours = calculate_hours(total_hours[0], total_hours[1])
