@@ -101,8 +101,9 @@ def convert(filename, output_filename):
 
             #setting color for holiday and weekends and resizing columns
             worksheet = writer.sheets[sheet]
-            worksheet.set_column(0, 5, 12)
-            worksheet.set_column(5, 6, 20)
+            worksheet.set_column(0, 3, 11)
+            worksheet.set_column(3, 5, 6)
+            worksheet.set_column(5, 6, 30)
             for i in yellow_indexes:
                 for j in range(6):
                     worksheet.write(i, j, df.iloc[i, j], format_yellow)
@@ -111,7 +112,7 @@ def convert(filename, output_filename):
             log.append([sheet, log_attendance, log_hours])
 
         else:
-            df_log = pd.DataFrame(log, columns=["Name", "Missed attendance", "Too much hours"])
+            df_log = pd.DataFrame(log, columns=["Name", "Missed attendance", "Too many hours"])
             df_log.to_excel(writer, sheet_name="Log")
             worksheet = writer.sheets["Log"]
             worksheet.set_column(1, 1, 15)
