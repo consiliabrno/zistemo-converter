@@ -1,5 +1,22 @@
 import pandas as pd
 from openpyxl import load_workbook
+from dateutil import parser
+from datetime import datetime
+
+#function to check if a string is a date
+def is_date(string):
+    try:
+        parser.parse(string)
+        return True
+    except ValueError:
+        return False
+    
+def is_weekend(date_string):
+    try:
+        date_obj = datetime.strptime(date_string, '%d.%m.%Y')
+        return date_obj.weekday() in [5, 6]
+    except ValueError:
+        return False
 
 def insert_row(new_row: list, new_index: int, df: pd.DataFrame, total_overtime=[0,0], total_hours=[0,0]):
     if len(new_row) == 8:
@@ -47,7 +64,13 @@ def convert(filename, output_filename):
             df = df.replace("Actual", "Práce").replace("Nelze zaplatit", "Přesčas")
             
             #collecting indexes that needs to be deleted and searching for halfday holiday
+            '''
             for i in range(len(df.index)):
+                if df.iloc[i][2] != None:
+                    print(f'{is_date(df.iloc[i][2])} : {df.iloc[i][2]}')
+                if df.iloc[i][0] != None:
+                    print(f'{is_date(df.iloc[i][0])} : {df.iloc[i][0]}')
+
                 if df.iloc[i][0] == "Čas začátku / konce" or df.iloc[i][0] == "Illness / Nemocenská" or df.iloc[i][0] == "Dovolená" or df.iloc[i][2] == "Celkem" or df.iloc[i][0] == "Stav pružné pracovní doby" or df.iloc[i][0] == "Obnovení pružné pracovní doby" or df.iloc[i][0] == "Přihlášen" or df.iloc[i][0] == None or df.iloc[i][0] == "Celkem" or df.iloc[i][0] == "Unpaid Leave / Neplacené volno" or df.iloc[i][0] == "Blood Donation / Darování krve":
                     indexes.append(i)
 
@@ -60,6 +83,23 @@ def convert(filename, output_filename):
                     df.at[i, 7] = "Půl dne dovolená"
                     
             df = df.drop(indexes)
+            '''
+            for i in range(len(df.index)):
+                if df.iloc[i][0] == None:
+                    indexes.append(i)
+                elif df.iloc[i][0] != "Detaily docházky" and df.iloc[i][0] != "Období" and df.iloc[i][0] != "Report pro:" and df.iloc[i][0] != "Den":
+                    if not is_date(df.iloc[i][0]):
+                        indexes.append(i)
+                
+                    if df.iloc[i][2] != None:
+                        if not is_date(df.iloc[i][2]):
+                            indexes.append(i)
+
+                if df.iloc[i][7] == "Dovolená" and df.iloc[i][4] == "4:00":
+                    df.at[i, 7] = "Půl dne dovolená"
+
+            df = df.drop(indexes)
+            
 
             #calculating total hours worked and overtime hours
             for i in range(len(df.index)):
@@ -92,8 +132,11 @@ def convert(filename, output_filename):
             
             #indexes for coloring
             for i in range(len(df.index)):
-                if df.iloc[i][4] == "0:00" and df.iloc[i][7] == None:
-                    yellow_indexes.append(i) 
+                #if df.iloc[i][4] == "0:00" and df.iloc[i][7] == None:
+                    #yellow_indexes.append(i)
+                 
+                if is_weekend(df.iloc[i][0]):
+                    yellow_indexes.append(i)
             
             df.drop([4, 6], axis=1, inplace=True)
 
