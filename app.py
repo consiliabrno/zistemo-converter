@@ -10,6 +10,8 @@ app.config['DEBUG'] = False
 app.config['ENV'] = 'production'
 app.config.from_object('config')
 
+app_version = "1.0"
+
 ALLOWED_EXTENSIONS = set(["xlsx"])
 
 def is_allowed_file(filename: str):
@@ -44,7 +46,7 @@ def index():
             if os.path.exists(f"static/input/{filename}"):
                 os.remove(f"static/input/{filename}") 
             return send_from_directory("static/output", new_file)
-    return render_template("index.jinja")
+    return render_template("index.jinja", version=app_version)
 
 if __name__ == "__main__":
     app.run(debug=False, host='0.0.0.0', port=5000)
