@@ -18,3 +18,4 @@ tzdata==2023.3
 waitress==2.1.2
 Werkzeug==2.3.6
 XlsxWriter==3.1.2
+gitpython==3.1.41

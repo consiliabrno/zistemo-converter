@@ -4,6 +4,7 @@ import shutil
 from flask import Flask, request, render_template, send_from_directory
 from werkzeug.utils import secure_filename
 from convert import convert
+from git import Repo
 
 app = Flask(__name__)
 app.config['DEBUG'] = False
@@ -11,6 +12,17 @@ app.config['ENV'] = 'production'
 app.config.from_object('config')
 
 app_version = "1.0"
+
+def get_latest_commit_hash(repo_path='.'):
+    try:
+        repo = Repo(repo_path)
+        hexsha = repo.head.commit.hexsha
+        short_hexsha = hexsha[:7]
+        return short_hexsha
+    except Exception as e:
+        print(f"Error retrieving commit hash: {e}")
+        return None
+
 
 ALLOWED_EXTENSIONS = set(["xlsx"])
 
@@ -34,6 +46,7 @@ def delete_output():
 @app.route("/", methods=["GET", "POST"])
 def index():
     delete_output()
+    hexsha = get_latest_commit_hash()
 
     if request.method == "POST":
         file = request.files["file"]
@@ -46,7 +59,7 @@ def index():
             if os.path.exists(f"static/input/{filename}"):
                 os.remove(f"static/input/{filename}") 
             return send_from_directory("static/output", new_file)
-    return render_template("index.jinja", version=app_version)
+    return render_template("index.jinja", version=app_version, hexsha = hexsha)
 
 if __name__ == "__main__":
     app.run(debug=False, host='0.0.0.0', port=5000)
