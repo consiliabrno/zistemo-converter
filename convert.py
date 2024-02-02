@@ -61,7 +61,12 @@ def convert(filename, output_filename):
             wb[sheet].delete_cols(8)
 
             df = pd.DataFrame(wb[sheet].values)
-            df = df.replace("Actual", "Práce").replace("Nelze zaplatit", "Přesčas")
+            df = df.replace("Actual", "Práce")
+
+            if df.applymap(lambda x: "Nelze zaplatit" in str(x)).any().any():
+                df = df.replace("Nelze zaplatit", "Přesčas")
+            elif df.applymap(lambda x: "Not payable" in str(x)).any().any():
+                df = df.replace("Not payable", "Overtime")
             
             #collecting indexes that needs to be deleted and searching for halfday holiday
             '''
@@ -87,7 +92,7 @@ def convert(filename, output_filename):
             for i in range(len(df.index)):
                 if df.iloc[i][0] == None:
                     indexes.append(i)
-                elif df.iloc[i][0] != "Detaily docházky" and df.iloc[i][0] != "Období" and df.iloc[i][0] != "Report pro:" and df.iloc[i][0] != "Den":
+                elif df.iloc[i][0] != "Detaily docházky" and df.iloc[i][0] != "Attendance Details" and df.iloc[i][0] != "Období" and df.iloc[i][0] != "Period" and df.iloc[i][0] != "Report pro:" and df.iloc[i][0] != "Report for" and df.iloc[i][0] != "Den" and df.iloc[i][0] != "Day":
                     if not is_date(df.iloc[i][0]):
                         indexes.append(i)
                 
@@ -95,11 +100,13 @@ def convert(filename, output_filename):
                         if not is_date(df.iloc[i][2]):
                             indexes.append(i)
 
-                if df.iloc[i][7] == "Dovolená" and df.iloc[i][4] == "4:00":
+                if df.iloc[i][7] == "Vacation":
+                    df.at[i, 7] = "Dovolená"
+
+                if df.iloc[i][7] == "Dovolená" and df.iloc[i][7] == "Vacation" and df.iloc[i][4] == "4:00":
                     df.at[i, 7] = "Půl dne dovolená"
 
             df = df.drop(indexes)
-            
 
             #calculating total hours worked and overtime hours
             for i in range(len(df.index)):
