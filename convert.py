@@ -68,27 +68,6 @@ def convert(filename, output_filename):
             elif df.applymap(lambda x: "Not payable" in str(x)).any().any():
                 df = df.replace("Not payable", "Overtime")
             
-            #collecting indexes that needs to be deleted and searching for halfday holiday
-            '''
-            for i in range(len(df.index)):
-                if df.iloc[i][2] != None:
-                    print(f'{is_date(df.iloc[i][2])} : {df.iloc[i][2]}')
-                if df.iloc[i][0] != None:
-                    print(f'{is_date(df.iloc[i][0])} : {df.iloc[i][0]}')
-
-                if df.iloc[i][0] == "Čas začátku / konce" or df.iloc[i][0] == "Illness / Nemocenská" or df.iloc[i][0] == "Dovolená" or df.iloc[i][2] == "Celkem" or df.iloc[i][0] == "Stav pružné pracovní doby" or df.iloc[i][0] == "Obnovení pružné pracovní doby" or df.iloc[i][0] == "Přihlášen" or df.iloc[i][0] == None or df.iloc[i][0] == "Celkem" or df.iloc[i][0] == "Unpaid Leave / Neplacené volno" or df.iloc[i][0] == "Blood Donation / Darování krve":
-                    indexes.append(i)
-
-                if df.iloc[i][0] != None:
-                    if "Den" in df.iloc[i][0]:
-                        if i != 5:
-                            indexes.append(i)
-
-                if df.iloc[i][7] == "Dovolená" and df.iloc[i][4] == "4:00":
-                    df.at[i, 7] = "Půl dne dovolená"
-                    
-            df = df.drop(indexes)
-            '''
             for i in range(len(df.index)):
                 if df.iloc[i][0] == None:
                     indexes.append(i)
