@@ -82,7 +82,7 @@ def convert(filename, output_filename):
                 if df.iloc[i][7] == "Vacation":
                     df.at[i, 7] = "Dovolená"
 
-                if df.iloc[i][7] == "Dovolená" and df.iloc[i][7] == "Vacation" and df.iloc[i][4] == "4:00":
+                if (df.iloc[i][7] == "Dovolená" or df.iloc[i][7] == "Vacation") and "4:00" in df.iloc[i][4]:
                     df.at[i, 7] = "Půl dne dovolená"
 
             df = df.drop(indexes)
@@ -117,10 +117,7 @@ def convert(filename, output_filename):
             insert_row(["Celkem", "", "", f"{total_hours[0]}:{total_hours[1]}", "", f"{total_overtime[0]}:{total_overtime[1]}", "", ""], -1, df=df, total_overtime=total_overtime, total_hours=total_hours)
             
             #indexes for coloring
-            for i in range(len(df.index)):
-                #if df.iloc[i][4] == "0:00" and df.iloc[i][7] == None:
-                    #yellow_indexes.append(i)
-                 
+            for i in range(len(df.index)):               
                 if is_weekend(df.iloc[i][0]):
                     yellow_indexes.append(i)
             
