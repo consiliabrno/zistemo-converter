@@ -10,4 +10,6 @@ RUN apt update && apt install -y git
 
 COPY . .
 
+RUN git config --global --add safe.directory .
+
 CMD ["python3", "app.py"]
