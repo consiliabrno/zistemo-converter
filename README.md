@@ -1,23 +1,78 @@
-### How do I get set up? ###
+# Zistemo Converter
 
-* Summary of set up
+## HowTo install & run (Docker)
 
-You need python and flask to run this website
+## Prerequisites
+```bash
+docker
+docker-compose-plugin
+git
+```
 
-* Configuration
+## Login to remote & clone the app
+```bash
+ssh server@ubuntumaster
+git clone https://github.com/davidConsilia/zistemo_converter.git
+cd zistemo_converter
+```
+
+## Execution
+
+> [!IMPORTANT]
+> For all the below to work, you need have pwd in the folder where you cloned the app earlier
+
+### Start the app:
+
+```bash
+docker compose up -d
+```
+
+### Stop it:
+
+```bash
+docker compose down
+```
+
+### Update:
+
+```bash
+docker compose down
+git pull
+docker compose up -d --build
+```
+
+## HowTo install and run (bare-metal, without Docker)
+
+### Prerequisites
+
+Python3.8+ and Flask
+
+### Setup
 
 To install Python firstly create local enviroment
 
-> python -m venv venv
+```bash
+python3 -m venv venv
+```
 
 Activate venv
 
->.\venv\Scripts\activate
+```bash
+# Windows
+.\venv\Scripts\activate
+
+# Linux
+. venv/bin/activate
+```
 
 Install requirements
 
->pip install -r requirements.txt
+```bash
+pip install -r requirements.txt
+```
 
 Run Website
 
->python app.py
+```bash
+python3 app.py
+```
