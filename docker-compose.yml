@@ -1,8 +1,16 @@
 services:
   server:
+    container_name: zst-converter
     build: .
-    ports:
-      - "5000:5000"
+    expose:
+      - 5000
+    networks:
+      - proxy
     restart: unless-stopped
     volumes: 
       - .:/app
+
+networks:
+  proxy:
+    name: npm-proxy
+    external: true
