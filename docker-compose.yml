@@ -9,6 +9,10 @@ services:
     restart: unless-stopped
     volumes: 
       - .:/app
+    logging:
+      driver: syslog
+      options:
+        tag: 'zst-converter'
 
 networks:
   proxy:
